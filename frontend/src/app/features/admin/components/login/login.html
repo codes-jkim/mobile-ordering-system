@@ -1,0 +1,55 @@
+<div class="login">
+  <div class="login__card">
+    <div class="login__header">
+      <a class="login__header-link" routerLink="/products" aria-label="Go to products page">
+        <img src="/images/logo.png" class="login__header-logo" alt="Roll & Go Logo" />
+      </a>
+      <h1 class="login__header-title">Admin Login</h1>
+    </div>
+
+    <mat-card class="keypad" role="group">
+      <div class="keypad__display" [class.max-exceeded]="overMaxLength()">
+        @for (isFilled of passwordDisplayCircles(); track $index) {
+          <span class="keypad__display--circle" [class.filled]="isFilled"> </span>
+        }
+      </div>
+
+      <span class="cdk-visually-hidden" aria-live="polite">
+        Password, {{ password().length }} of 4 digits entered.
+      </span>
+      <span id="password-error" class="cdk-visually-hidden" aria-live="polite">
+        @if (overMaxLength()) {
+          Maximum password length reached
+        }
+      </span>
+
+      <div class="keypad__buttons">
+        @for (digit of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track digit) {
+          <button matButton class="keypad__key" (click)="appendPassword(digit.toString())">
+            {{ digit }}
+          </button>
+        }
+
+        <button
+          matButton
+          class="keypad__key keypad__key--text"
+          (click)="clearPassword()"
+          [disabled]="password().length === 0"
+          aria-label="Clear password"
+        >
+          clear
+        </button>
+        <button matButton class="keypad__key" (click)="appendPassword('0')">0</button>
+        <button
+          matButton
+          (click)="submitPassword()"
+          class="keypad__key keypad__key--text"
+          [disabled]="password().length < MAX_PASSWORD_LENGTH"
+          aria-label="Submit password"
+        >
+          enter
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,147 @@
+.order-list {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  &__empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: var(--mat-sys-color-on-surface-variant);
+    font-size: 16px;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    color: var(--mat-sys-color-primary);
+    gap: 8px;
+
+    .spin {
+      animation: spin 1.5s linear infinite;
+    }
+  }
+}
+
+.order-card {
+  margin-bottom: 16px;
+  border-left: 4px solid transparent;
+
+  &.status-preparing {
+    border-left-color: #ff9800;
+  }
+
+  &.status-completed {
+    border-left-color: #4caf50;
+  }
+
+  &.status-cancelled {
+    border-left-color: #f44336;
+  }
+}
+
+.order-status {
+  margin-left: auto;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+
+  &.status-preparing {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+
+  &.status-completed {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+  }
+
+  &.status-cancelled {
+    background-color: #ffebee;
+    color: #b71c1c;
+  }
+}
+
+.order-items {
+  margin: 16px 0;
+
+  .order-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+
+    &__quantity {
+      font-weight: 500;
+      width: 30px;
+      margin-right: 8px;
+    }
+
+    &__name {
+      flex: 1;
+    }
+
+    &__price {
+      font-weight: 500;
+    }
+  }
+}
+
+.order-total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--mat-sys-color-outline-variant);
+
+  &__label {
+    margin-right: 8px;
+  }
+
+  &__price {
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--mat-sys-color-primary);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 768px) {
+  .order-list__content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .order-card {
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  .order-list__content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,24 @@
+<section class="main-layout">
+  <div class="main-layout__container">
+    <header class="main-layout__header">
+      <a routerLink="/" class="main-layout__brand" aria-label="Go to product list page">
+        <div class="main-layout__brand-logo">
+          <img src="/images/logo.png" class="main-layout__brand-logo" alt="Roll & Go Logo" />
+        </div>
+        <h1>Roll & Go</h1>
+      </a>
+      <a routerLink="/login" class="main-layout__admin-link" aria-label="Go to admin login page">
+        <mat-icon aria-hidden="true">settings</mat-icon>
+      </a>
+    </header>
+
+    <main class="main-layout__content" [class.with-cart]="this.cartService.items().length > 0">
+      <router-outlet></router-outlet>
+    </main>
+
+    @if (this.cartService.items().length > 0) {
+      <app-cart-detail></app-cart-detail>
+      <app-cart-status></app-cart-status>
+    }
+  </div>
+</section>

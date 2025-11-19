@@ -1,0 +1,32 @@
+<h1 appInitialFocus>Settings</h1>
+<div class="settings-container">
+  <nav class="settings-container__nav" aria-label="Settings Navigation">
+    <mat-list class="settings-container__nav-list">
+      <button
+        class="settings-container__nav-item"
+        matButton
+        (click)="selectedItem.set('change-password')"
+        [class.active]="selectedItem() === 'change-password'"
+      >
+        <mat-icon aria-hidden="true">lock</mat-icon>
+        Change Password
+      </button>
+      <button
+        class="settings-container__nav-item"
+        matButton
+        (click)="selectedItem.set('category-management')"
+        [class.active]="selectedItem() === 'category-management'"
+      >
+        <mat-icon aria-hidden="true">category</mat-icon>
+        <span>Manage Categories</span>
+      </button>
+    </mat-list>
+  </nav>
+  <div class="settings-container__content">
+    @if (selectedItem() === 'change-password') {
+      <app-change-password></app-change-password>
+    } @else if (selectedItem() === 'category-management') {
+      <app-category-management></app-category-management>
+    }
+  </div>
+</div>

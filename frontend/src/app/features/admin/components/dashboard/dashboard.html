@@ -1,0 +1,92 @@
+<div class="dashboard">
+  <h1 appInitialFocus class="dashboard__title">Dashboard</h1>
+  <div class="dashboard__stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon aria-hidden="true">shopping_cart</mat-icon>
+        <mat-card-title>Today's Orders</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-card__value">
+          <span aria-label="Daily Orders Count">{{ dailyOrdersCount }}</span>
+          <span aria-hidden="true"> / </span>
+          <span aria-label="Daily Revenue">{{ dailyRevenue | number }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon aria-hidden="true">date_range</mat-icon>
+        <mat-card-title>Weekly Orders</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-card__value">
+          <span aria-label="Weekly Orders Count">{{ weeklyOrdersCount }}</span>
+          <span aria-hidden="true"> / </span>
+          <span aria-label="Weekly Revenue">{{ weeklyRevenue | number }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-icon aria-hidden="true">attach_money</mat-icon>
+        <mat-card-title>Weekly Average Order Value</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-card__value">{{ weeklyRevenue / 7 | number: '1.2-2' }}</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dashboard__category">
+    <h2 class="dashboard__section-title">Popular Products by Category</h2>
+    <div class="dashboard__category-grid">
+      @for (categoryGroup of topProductsByCategory; track categoryGroup.category) {
+        <mat-card class="category-rank-card">
+          <mat-card-header>
+            <mat-card-title>{{ categoryGroup.category }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ul class="category-rank-card__list">
+              @for (product of categoryGroup.topProducts; track product.productId; let i = $index) {
+                <li class="category-rank-card__item">
+                  <span class="category-rank-card__rank" [attr.aria-label]="i + 1 + 'strank'">{{
+                    i + 1
+                  }}</span>
+                  <span class="category-rank-card__info">
+                    {{ product.name }}
+                  </span>
+                  <span
+                    class="category-rank-card__sold"
+                    [attr.aria-label]="product.soldCount + ' sold'"
+                    >{{ product.soldCount }}
+                  </span>
+                </li>
+              }
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  </div>
+
+  <div class="dashboard__charts-grid">
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Sales Trend</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas
+          baseChart
+          [data]="salesChartData"
+          [type]="'line'"
+          [options]="salesChartOptions"
+          role="img"
+          aria-label="Line chart showing sales trend over the last 7 days."
+        >
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

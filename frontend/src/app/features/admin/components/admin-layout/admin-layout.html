@@ -1,0 +1,61 @@
+<section class="admin-layout">
+  <div class="admin-layout__container">
+    <header class="admin-layout__header">
+      <div class="admin-layout__brand">
+        <div class="admin-layout__brand-logo">
+          <img src="/images/logo.png" class="admin-layout__brand-logo" alt="Roll & Go Logo" />
+        </div>
+        <h1>Roll & Go</h1>
+      </div>
+      <button matIconButton (click)="logout()" aria-label="Logout">
+        <mat-icon aria-hidden="true">logout</mat-icon>
+      </button>
+    </header>
+    <main class="admin-layout__content" id="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <nav class="admin-nav" role="navigation" aria-label="main navigation">
+    <a
+      class="admin-nav__item"
+      routerLink="/admin/order-list"
+      routerLinkActive="admin-nav__item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      <mat-icon class="admin-nav__icon" aria-hidden="true">receipt_long</mat-icon>
+      <span class="admin-nav__label">Order</span>
+    </a>
+    <a
+      class="admin-nav__item"
+      routerLink="/admin/dashboard"
+      routerLinkActive="admin-nav__item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      <mat-icon class="admin-nav__icon" aria-hidden="true">dashboard</mat-icon>
+      <span class="admin-nav__label">Dashboard</span>
+    </a>
+    <a
+      class="admin-nav__item"
+      routerLink="/admin/management"
+      routerLinkActive="admin-nav__item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      <mat-icon class="admin-nav__icon" aria-hidden="true">inventory</mat-icon>
+      <span class="admin-nav__label">Management</span>
+    </a>
+    <a
+      class="admin-nav__item"
+      routerLink="/admin/settings"
+      routerLinkActive="admin-nav__item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      <mat-icon class="admin-nav__icon" aria-hidden="true">settings</mat-icon>
+      <span class="admin-nav__label">Settings</span>
+    </a>
+  </nav>
+</section>

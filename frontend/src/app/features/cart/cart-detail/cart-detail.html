@@ -1,0 +1,54 @@
+<div class="cart-detail" [class.open]="isOpen()">
+  <div class="cart-detail__toggle">
+    <button
+      class="cart-detail__toggle-button"
+      matIconButton
+      appInitialFocus
+      [attr.aria-label]="isOpen() ? 'Close cart details' : 'Open cart details'"
+      [attr.aria-expanded]="isOpen()"
+      aria-controls="cart-contents"
+      (click)="toggleCartDetails()"
+    >
+      <mat-icon aria-hidden="true" class="cart-detail__toggle-icon">{{
+        isOpen() ? 'keyboard_arrow_down' : 'keyboard_arrow_up'
+      }}</mat-icon>
+    </button>
+  </div>
+  <div class="cart-detail__contents" id="cart-contents" [attr.aria-hidden]="!isOpen()">
+    <div class="cart-detail__header">
+      <h2 class="cart-detail__header-title">Items in Cart</h2>
+      <button matButton (click)="cartService.clearCart()">Delete All</button>
+    </div>
+
+    <ul class="cart-detail__items">
+      @for (item of cartService.items(); track item.product._id) {
+        <li class="cart-detail__item">
+          <div class="cart-detail__item-info">
+            <span class="cart-detail__item-name">{{ item.product.name }}</span>
+            <span class="cart-detail__item-price">{{ item.product.price | currency: 'KRW' }}</span>
+          </div>
+          <div class="cart-detail__item-controls">
+            <div class="cart-detail__item-control">
+              <button
+                mat-icon-button
+                (click)="updateItemQuantity(item.product, item.quantity - 1)"
+                [attr.aria-label]="'remove one ' + item.product.name"
+              >
+                <mat-icon aria-hidden="true">remove</mat-icon>
+              </button>
+              <span class="cart-detail__item-quantity">{{ item.quantity }}</span>
+              <button
+                mat-icon-button
+                (click)="updateItemQuantity(item.product, item.quantity + 1)"
+                [attr.aria-label]="'add one ' + item.product.name"
+              >
+                <mat-icon aria-hidden="true">add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </li>
+        <mat-divider></mat-divider>
+      }
+    </ul>
+  </div>
+</div>

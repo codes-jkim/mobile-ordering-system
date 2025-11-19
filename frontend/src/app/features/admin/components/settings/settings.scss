@@ -1,0 +1,41 @@
+.settings-container {
+  display: flex;
+  gap: 32px;
+  &__nav {
+    flex: 0 0 200px;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    &-item {
+      margin-bottom: 1rem;
+      &.active {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+  }
+  &__content {
+    flex: 1 1 auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .settings-container {
+    flex-direction: column;
+    gap: 24px;
+    &__nav {
+      flex: 1 1 auto;
+      border-right: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+      &-list {
+        display: flex;
+        padding-top: 0;
+      }
+
+      &-item {
+        flex: 1;
+        padding: 8px 0;
+        border-radius: 0;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

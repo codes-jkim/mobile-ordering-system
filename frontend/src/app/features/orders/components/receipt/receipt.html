@@ -1,0 +1,42 @@
+<div class="receipt-container">
+  <div class="receipt-header">
+    <mat-icon class="receipt-header__icon" aria-hidden="true">check_circle</mat-icon>
+    <h1 mat-dialog-title class="receipt-header__title">Order Confirmation</h1>
+    <p class="receipt-header__subtitle">
+      Thank you for your order. We will prepare it deliciously.
+    </p>
+  </div>
+
+  <mat-dialog-content class="receipt-content">
+    <div class="receipt-info">
+      <dl class="receipt-info__item">
+        <dt>Order Number:</dt>
+        <dd>{{ data.order._id }}</dd>
+      </dl>
+      <dl class="receipt-info__item">
+        <dt>Order Time:</dt>
+        <dd>{{ data.order.createdAt | date: 'yyyy-MM-dd HH:mm' }}</dd>
+      </dl>
+    </div>
+
+    <h2 class="receipt-content__section-title">Order Details</h2>
+    <ul class="receipt-items">
+      @for (item of data.order.items; track item.product._id) {
+        <li>
+          <div class="receipt-items__item">
+            <span>{{ item.product.name }} x {{ item.quantity }}</span>
+            <span>{{ item.product.price * item.quantity | currency: 'KRW' }}</span>
+          </div>
+        </li>
+      }
+    </ul>
+    <dl class="receipt-total">
+      <span>Total Price:</span>
+      <span>{{ data.order.totalPrice | currency: 'KRW' }}</span>
+    </dl>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton="filled" (click)="close()">OK</button>
+  </mat-dialog-actions>
+</div>

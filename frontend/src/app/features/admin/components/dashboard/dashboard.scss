@@ -1,0 +1,112 @@
+.dashboard {
+  &__title {
+    margin-bottom: 24px;
+    color: #333;
+    font-weight: 500;
+  }
+  &__category {
+    margin-bottom: 24px;
+  }
+  &__stats-grid,
+  &__charts-grid,
+  &__category-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  &__stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  &__charts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  &__category-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+
+  &__section-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+}
+
+.stat-card {
+  &__value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 10px;
+  }
+}
+
+.chart-card {
+  min-height: 350px;
+}
+
+.category-rank-card {
+  display: flex;
+  flex-direction: column;
+
+  &__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 12px;
+    border-top: solid 1px var(--mat-sys-outline);
+    padding: 0px;
+  }
+
+  &__item {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__rank {
+    font-weight: bold;
+    color: #3f51b5;
+    margin-right: 16px;
+    width: 20px;
+    text-align: center;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__image {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  &__sold {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard__stats-grid,
+  .dashboard__category-grid {
+    grid-template-columns: 1fr;
+  }
+}

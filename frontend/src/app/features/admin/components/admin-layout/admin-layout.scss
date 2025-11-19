@@ -1,0 +1,110 @@
+@use '../../../../../styles/constants';
+
+:host {
+  display: block;
+  height: 100%;
+}
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  &__header {
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    height: constants.$header-height;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    justify-content: space-between;
+  }
+  &__brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &-logo {
+      max-height: 40px;
+      margin-right: 10px;
+    }
+  }
+  &__admin-link {
+    text-decoration: none;
+    cursor: pointer;
+    color: inherit;
+    &:hover {
+      color: var(--mat-sys-primary);
+    }
+  }
+
+  &__content {
+    padding-top: 0.5rem;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    padding-bottom: calc(constants.$admin-footer-height + 0.5rem);
+    min-height: calc(100vh - (1rem + constants.$admin-footer-height + constants.$header-height));
+  }
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: constants.$admin-footer-height;
+  background-color: var(--mat-sys-on-tertiary);
+  z-index: 1000;
+  border-top: 1px solid var(--mat-sys-surface-variant);
+  box-sizing: border-box;
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    text-decoration: none;
+    color: var(--mat-sys-color-on-surface-variant);
+    transition: all 0.2s ease;
+    position: relative;
+
+    &:hover {
+      color: var(--mat-sys-primary);
+    }
+
+    &--active {
+      color: var(--mat-sys-primary);
+
+      &::before {
+        transform: translateX(-50%) scaleX(1);
+      }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 32px;
+      height: 3px;
+      background-color: var(--mat-sys-primary);
+      border-radius: 0 0 3px 3px;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &__icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+    margin-bottom: 4px;
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 500;
+  }
+}

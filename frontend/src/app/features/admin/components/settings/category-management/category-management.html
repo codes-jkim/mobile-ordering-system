@@ -1,0 +1,60 @@
+<div class="cm-header">
+  <button mat-flat-button (click)="openCategoryForm()" class="pm__add-btn">
+    <mat-icon aria-hidden="true">add</mat-icon>
+    Add New Category
+  </button>
+</div>
+
+<div class="cm-container">
+  <mat-table
+    #table
+    [dataSource]="categories()"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    cdkDropListData="dataSource"
+    class="cm-table"
+  >
+    <caption class="cdk-visually-hidden">
+      List of all categories with actions to edit or delete them.
+    </caption>
+
+    <ng-container matColumnDef="displayOrder" sticky>
+      <mat-header-cell *matHeaderCellDef> Display Order </mat-header-cell>
+      <mat-cell *matCellDef="let category">
+        <mat-icon class="drag-cursor">reorder</mat-icon>
+        <span class="cm-table__display-order">{{ category.displayOrder + 1 }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let category"> {{ category.name }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="isActive">
+      <mat-header-cell *matHeaderCellDef>Active</mat-header-cell>
+      <mat-cell *matCellDef="let category">
+        <mat-slide-toggle
+          [checked]="category.isActive"
+          (change)="updateCategoryStatus(category, $event.checked)"
+          [aria-label]="category.name + ' status'"
+        ></mat-slide-toggle>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+      <mat-cell *matCellDef="let category">
+        <button mat-icon-button aria-label="Edit category" (click)="openCategoryForm(category)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Delete category" (click)="deleteCategory(category)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"></mat-row>
+  </mat-table>
+</div>

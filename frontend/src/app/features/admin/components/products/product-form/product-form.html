@@ -1,0 +1,125 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h2>
+
+<form [formGroup]="productForm" (ngSubmit)="onSave()">
+  <div mat-dialog-content class="pf__content">
+    <mat-form-field class="pf__field">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        placeholder="Product name"
+        required
+        aria-describedby="name-error"
+        [attr.aria-invalid]="
+          productForm.get('name')?.touched && productForm.get('name')?.hasError('required')
+            ? 'true'
+            : 'false'
+        "
+      />
+      @if (productForm.get('name')?.touched && productForm.get('name')?.hasError('required')) {
+        <mat-error id="name-error"> Product name is required. </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="pf__field">
+      <mat-label>Category</mat-label>
+      <mat-select
+        formControlName="category"
+        required
+        aria-describedby="category-error"
+        [attr.aria-invalid]="
+          productForm.get('category')?.touched && productForm.get('category')?.hasError('required')
+            ? 'true'
+            : 'false'
+        "
+      >
+        @for (category of categories(); track category._id) {
+          <mat-option [value]="category">{{ category.name }}</mat-option>
+        }
+      </mat-select>
+      @if (
+        productForm.get('category')?.touched && productForm.get('category')?.hasError('required')
+      ) {
+        <mat-error id="category-error"> Product category is required. </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="pf__field">
+      <mat-label>Price</mat-label>
+      <input
+        matInput
+        formControlName="price"
+        type="number"
+        min="0"
+        placeholder="0"
+        required
+        aria-describedby="price-error"
+        [attr.aria-invalid]="
+          productForm.get('price')?.touched && productForm.get('price')?.hasError('required')
+            ? 'true'
+            : 'false'
+        "
+      />
+      @if (productForm.get('price')?.touched && productForm.get('price')?.hasError('required')) {
+        <mat-error id="price-error"> Product price is required. </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="pf__field">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" placeholder="Product description"></textarea>
+    </mat-form-field>
+
+    <div class="pf__field">
+      <mat-slide-toggle formControlName="inStock" aria-label=""> In Stock </mat-slide-toggle>
+      <mat-hint align="start" class="pf__toggle-hint">
+        If turned off, customers won't be able to order this product.
+      </mat-hint>
+    </div>
+
+    <div class="pf__image-upload" role="group" aria-labelledby="image-upload-title">
+      <span class="pf__image-upload-title" id="image-upload-title">Product image *</span>
+      <input
+        type="file"
+        #fileInput
+        style="display: none"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+      />
+
+      @if (!imagePreview) {
+        <button
+          type="button"
+          class="pf__upload-btn"
+          (click)="triggerFileInput()"
+          aria-label="Upload product image"
+        >
+          <mat-icon class="pf__upload-btn--icon" aria-hidden="true">add_photo_alternate</mat-icon>
+          <span class="pf__upload-btn--text">Upload Product Image</span>
+        </button>
+      } @else {
+        <div class="pf__preview-container">
+          <img
+            [src]="imagePreview"
+            [alt]="'Preview of selected product image: ' + (selectedFile?.name || '')"
+            class="pf__preview-img"
+          />
+          <button
+            matIconButton
+            type="button"
+            class="pf__remove-btn"
+            (click)="removeSelectedFile()"
+            aria-label="Remove selected image"
+          >
+            <mat-icon aria-hidden="true">delete</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="pf__actions">
+    <button matButton type="button" (click)="onCancel()">Cancel</button>
+    <button matButton type="submit" [disabled]="isSaveDisabled">Save</button>
+  </div>
+</form>

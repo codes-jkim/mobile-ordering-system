@@ -1,0 +1,37 @@
+:host {
+  padding: 0 1rem 2rem;
+}
+.quantity-selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &__product-name {
+    font-size: 1.2rem;
+  }
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 4px;
+    padding: 0 0.5rem;
+  }
+  &__quantity {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  &__total-price {
+    font-size: 1.5rem;
+    margin-right: 2rem;
+  }
+  &__btn {
+    flex-grow: 1;
+    padding: 1.5rem 0;
+  }
+}

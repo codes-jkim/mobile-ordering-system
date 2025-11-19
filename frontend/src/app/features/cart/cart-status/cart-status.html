@@ -1,0 +1,23 @@
+<footer class="cart-status">
+  <div class="cart-status__info" role="status" aria-live="polite" aria-label="current cart status">
+    <mat-icon
+      class="cart-status__icon"
+      aria-hidden="false"
+      matBadgeColor="accent"
+      [matBadgeDescription]="cartService.itemCount() + ' items in cart'"
+      [matBadge]="cartService.itemCount()"
+      >shopping_cart</mat-icon
+    >
+    <span class="cart-status__price" aria-live="polite">{{
+      cartService.totalPrice() | currency: 'KRW'
+    }}</span>
+  </div>
+  <button
+    matButton="elevated"
+    class="cart-status__button"
+    [disabled]="cartService.itemCount() === 0"
+    (click)="createOrder()"
+  >
+    Order Now
+  </button>
+</footer>

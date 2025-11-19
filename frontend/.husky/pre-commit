@@ -1,0 +1,6 @@
+cd frontend
+npm run lint --fix
+npm run format
+npm test -- --watch=false --browsers=ChromeHeadless
+exit 0
+

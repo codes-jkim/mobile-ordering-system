@@ -1,0 +1,25 @@
+<div class="quantity-selector">
+  <span class="quantity-selector__product-name" appInitialFocus>{{ product.name }}</span>
+  <div class="quantity-selector__controls">
+    <button
+      mat-icon-button
+      (click)="decrement()"
+      [disabled]="quantity() <= 1"
+      [attr.aria-label]="'remove one ' + product.name"
+      [aria-disabled]="quantity() <= 1"
+    >
+      <mat-icon aria-hidden="true">remove</mat-icon>
+    </button>
+    <span class="quantity-selector__quantity">{{ quantity() }}</span>
+    <button mat-icon-button (click)="increment()" [attr.aria-label]="'add one ' + product.name">
+      <mat-icon aria-hidden="true">add</mat-icon>
+    </button>
+  </div>
+</div>
+<div class="quantity-selector__actions">
+  <span class="quantity-selector__total-price">
+    {{ product.price * quantity() | currency: 'KRW' }}
+  </span>
+  <button mat-flat-button class="quantity-selector__btn" (click)="addToCart()">ADD TO CART</button>
+  <button (click)="close()" class="cdk-visually-hidden">close quantity selector</button>
+</div>

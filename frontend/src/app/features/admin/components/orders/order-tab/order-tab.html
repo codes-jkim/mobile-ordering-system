@@ -1,0 +1,59 @@
+@if (orders.length === 0 && !loading) {
+  <div class="order-tab__empty" role="status">
+    {{ emptyMessage }}
+  </div>
+}
+
+<div class="order-tab__content">
+  @for (order of orders; track order._id) {
+    <mat-card class="order-card">
+      <mat-card-header>
+        <mat-card-title> Order #{{ order._id.substr(-6) }} </mat-card-title>
+        <mat-card-subtitle>
+          {{ order.createdAt | date: 'yyyy/MM/dd HH:mm' }}
+        </mat-card-subtitle>
+        <div class="order-status" [ngClass]="getStatusClass(order.status)">
+          {{ order.status | uppercase }}
+        </div>
+      </mat-card-header>
+
+      <mat-card-content class="order-card__content">
+        <ul class="order-items">
+          @for (item of order.items; track item.product._id) {
+            <li
+              class="order-item"
+              [attr.aria-label]="
+                item.quantity +
+                item.product.name +
+                ' at ' +
+                (item.product.price * item.quantity | currency: 'KRW')
+              "
+            >
+              <span class="order-item__quantity" aria-hidden="true">{{ item.quantity }} X</span>
+              <span class="order-item__name" aria-hidden="true">{{ item.product.name }}</span>
+              <span class="order-item__price" aria-hidden="true">{{
+                item.product.price * item.quantity | currency: 'KRW'
+              }}</span>
+            </li>
+          }
+        </ul>
+
+        <div class="order-total">
+          <span class="order-total__label">Total : </span>
+          <span class="order-total__price">{{ order.totalPrice | currency: 'KRW' }}</span>
+        </div>
+      </mat-card-content>
+
+      @if (status === 'preparing') {
+        <mat-card-actions class="order-card__actions">
+          <button matButton (click)="onCompleteOrder(order)" aria-label="Complete Order">
+            <mat-icon aria-hidden="true">check</mat-icon> Complete
+          </button>
+          <button matButton (click)="onCancelOrder(order)" aria-label="Cancel Order">
+            <mat-icon aria-hidden="true">close</mat-icon> Cancel
+          </button>
+        </mat-card-actions>
+      }
+    </mat-card>
+  }
+</div>

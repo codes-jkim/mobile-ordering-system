@@ -1,0 +1,41 @@
+<div class="product-list">
+  <h1>Product List</h1>
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    @for (category of categories(); track category) {
+      <mat-tab [label]="category"></mat-tab>
+    }
+  </mat-tab-group>
+  @if (filteredProducts().length > 0) {
+    <div class="product-list__grid">
+      @for (product of filteredProducts(); track product._id) {
+        <mat-card role="group">
+          <mat-card-header>
+            <mat-card-title>{{ product.name }}</mat-card-title>
+          </mat-card-header>
+          <img
+            mat-card-image
+            [src]="`${backendUrl}/${product.imageUrl}`"
+            [alt]="'image of ' + product.name"
+          />
+          <mat-card-content>
+            @if (product.description) {
+              <p>{{ product.description }}</p>
+            }
+            <div class="product-list__actions">
+              <span class="product-list__price">{{ product.price | currency: 'KRW' }}</span>
+              <button
+                matButton="outlined"
+                (click)="openQuantitySelector(product)"
+                [attr.aria-label]="'add ' + product.name + ' to cart'"
+              >
+                Add
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <p>No products found.</p>
+  }
+</div>

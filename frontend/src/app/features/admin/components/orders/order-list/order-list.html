@@ -1,0 +1,48 @@
+<div class="order-list">
+  <div class="order-list__header">
+    <h1 appInitialFocus class="order-list__title">Order List</h1>
+    <mat-form-field class="date-filter" appearance="outline">
+      <mat-label>Filter by date</mat-label>
+      <input matInput [matDatepicker]="picker" [formControl]="dateFilterControl" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <mat-tab-group
+    [selectedIndex]="activeTabIndex()"
+    (selectedIndexChange)="activeTabIndex.set($event)"
+  >
+    <mat-tab label="Preparing ({{ (preparingOrders$ | async)?.length || 0 }})">
+      @if (preparingOrders$ | async; as orders) {
+        <app-order-tab
+          [orders]="orders"
+          status="preparing"
+          emptyMessage="There are no preparing orders"
+          (completeOrder)="completeOrder($event)"
+          (cancelOrder)="cancelOrder($event)"
+        ></app-order-tab>
+      }
+    </mat-tab>
+
+    <mat-tab label="Completed({{ (completedOrders$ | async)?.length || 0 }})">
+      @if (completedOrders$ | async; as orders) {
+        <app-order-tab
+          [orders]="orders"
+          status="completed"
+          emptyMessage="There are no completed orders"
+        ></app-order-tab>
+      }
+    </mat-tab>
+
+    <mat-tab label="Cancelled ({{ (cancelledOrders$ | async)?.length || 0 }})">
+      @if (cancelledOrders$ | async; as orders) {
+        <app-order-tab
+          [orders]="orders"
+          status="cancelled"
+          emptyMessage="There are no cancelled orders"
+        ></app-order-tab>
+      }
+    </mat-tab>
+  </mat-tab-group>
+</div>

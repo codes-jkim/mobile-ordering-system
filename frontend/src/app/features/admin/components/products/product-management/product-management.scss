@@ -1,0 +1,33 @@
+@use '../../../../../../styles/constants' as constants;
+
+.pm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.pm__add-btn {
+  margin-left: auto;
+}
+
+.pm-container {
+  margin: 1rem 0;
+  max-height: calc(
+    100vh - (constants.$header-height + constants.$admin-footer-height + 66px + 2rem)
+  );
+  overflow-y: auto;
+}
+
+.pm-table {
+  width: 100%;
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  &__img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+  }
+}
