@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environment';
 import { Admin } from '../../shared/models/admin.model';
 
@@ -16,21 +16,20 @@ export class AuthService {
   isAuthenticated = signal<boolean>(false);
   loginError = signal<string | null>(null);
 
-  verifyPassword(password: string): Observable<{ data: Admin }> {
-    return this.http
-      .post<{ data: Admin }>(`${this.apiUrl}`, { password }, { withCredentials: true })
-      .pipe(
-        tap((response) => {
-          if (response.data._id) {
-            this.isAuthenticated.set(true);
-            this.loginError.set(null);
-          }
-        }),
-        catchError((error) => {
-          this.loginError.set(error.error?.message || 'Authentication failed');
-          return throwError(() => error);
-        }),
-      );
+  verifyPassword(password: string): Observable<{ data: Admin } | null> {
+    return this.http.post<{ data: Admin }>(`${this.apiUrl}`, { password }).pipe(
+      tap((response) => {
+        if (response.data._id) {
+          this.isAuthenticated.set(true);
+          this.loginError.set(null);
+        }
+      }),
+      catchError((error) => {
+        this.isAuthenticated.set(false);
+        this.loginError.set(error.error?.message || 'Authentication failed');
+        return of(null);
+      }),
+    );
   }
 
   logout(): void {

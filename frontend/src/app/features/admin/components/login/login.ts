@@ -65,15 +65,12 @@ export class Login {
   }
 
   submitPassword(): void {
-    this.authService.verifyPassword(this.password()).subscribe({
-      next: (result) => {
-        if (result) {
-          this.router.navigate(['/admin']);
-        }
-      },
-      error: () => {
+    this.authService.verifyPassword(this.password()).subscribe((result) => {
+      if (result) {
+        this.router.navigate(['/admin']);
+      } else {
         this.clearPassword();
-      },
+      }
     });
   }
 }
