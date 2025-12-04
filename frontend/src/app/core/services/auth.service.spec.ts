@@ -51,14 +51,11 @@ describe('AuthService', () => {
       expect(service.loginError()).toBeNull();
     });
 
-    it('should set loginError on failed login', () => {
+    it('should return null and set loginError on failed login', () => {
       const password = 'invalidPassword';
 
-      service.verifyPassword(password).subscribe({
-        next: () => fail('should have failed with 401 error'),
-        error: (error) => {
-          expect(error.status).toEqual(401);
-        },
+      service.verifyPassword(password).subscribe((response) => {
+        expect(response).toBeNull();
       });
 
       const req = httpTesting.expectOne(apiUrl);
