@@ -1,4 +1,12 @@
-import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +34,7 @@ import { CategoryService } from '../../../../../shared/services/category.service
   ],
   templateUrl: './product-form.html',
   styleUrl: './product-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductForm implements OnInit {
   private fb = inject(FormBuilder);

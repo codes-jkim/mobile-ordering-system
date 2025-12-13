@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,9 +20,12 @@ import { AuthService } from '../../../../core/services/auth.service';
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
+  host: {
+    '(window:keyup)': 'handleKeyboardEvent($event)',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
-  @HostListener('window:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.key >= '0' && event.key <= '9') {
       this.appendPassword(event.key);

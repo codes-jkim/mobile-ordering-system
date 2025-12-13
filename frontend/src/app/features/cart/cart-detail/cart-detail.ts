@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,7 @@ import { CartService } from '../cart.service';
   imports: [CurrencyPipe, MatIconModule, MatButtonModule, MatDividerModule, InitialFocusDirective],
   templateUrl: './cart-detail.html',
   styleUrl: './cart-detail.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartDetail {
   cartService = inject(CartService);

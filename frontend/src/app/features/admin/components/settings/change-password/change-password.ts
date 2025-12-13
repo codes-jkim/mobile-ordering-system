@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
   ],
   templateUrl: './change-password.html',
   styleUrl: './change-password.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePassword {
   private fb = inject(FormBuilder);

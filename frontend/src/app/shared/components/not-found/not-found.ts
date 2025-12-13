@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -9,6 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
   imports: [MatButtonModule, RouterModule],
   templateUrl: './not-found.html',
   styleUrl: './not-found.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFound {
   authService = inject(AuthService);

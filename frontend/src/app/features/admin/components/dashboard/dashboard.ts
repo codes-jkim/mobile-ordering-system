@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -29,18 +36,19 @@ Chart.register(...registerables, ChartDataLabels);
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard implements OnInit {
-  dailyOrdersCount = 0;
-  weeklyOrdersCount = 0;
-  dailyRevenue = 0;
-  weeklyRevenue = 0;
-  topProductsByCategory: TopProductsByCategory[] = [];
+  dailyOrdersCount = signal(0);
+  weeklyOrdersCount = signal(0);
+  dailyRevenue = signal(0);
+  weeklyRevenue = signal(0);
+  weeklyAverageOrderValue = computed(() => this.weeklyRevenue() / 7);
+  topProductsByCategory = signal<TopProductsByCategory[]>([]);
 
-  salesChartData: ChartData<'bar' | 'line'> = { datasets: [], labels: [] };
+  salesChartData = signal<ChartData<'bar' | 'line'>>({ datasets: [], labels: [] });
 
   private orderService = inject(OrderService);
-
   salesChartOptions: ChartOptions = {};
   ngOnInit(): void {
     this.loadDashboardData();
@@ -49,11 +57,11 @@ export class Dashboard implements OnInit {
   loadDashboardData(): void {
     this.orderService.getDashboardStats().subscribe({
       next: (stats) => {
-        this.dailyOrdersCount = stats.dailyOrders;
-        this.weeklyOrdersCount = stats.weeklyOrders;
-        this.dailyRevenue = stats.dailyRevenue;
-        this.weeklyRevenue = stats.weeklyRevenue;
-        this.topProductsByCategory = stats.topProductsByCategory;
+        this.dailyOrdersCount.set(stats.dailyOrders);
+        this.weeklyOrdersCount.set(stats.weeklyOrders);
+        this.dailyRevenue.set(stats.dailyRevenue);
+        this.weeklyRevenue.set(stats.weeklyRevenue);
+        this.topProductsByCategory.set(stats.topProductsByCategory);
 
         this.initSalesChart(stats.salesByDate);
       },
@@ -138,7 +146,7 @@ export class Dashboard implements OnInit {
       }
     }
 
-    this.salesChartData = {
+    this.salesChartData.set({
       labels: labels,
       datasets: [
         {
@@ -157,6 +165,6 @@ export class Dashboard implements OnInit {
           backgroundColor: '#ffb787',
         },
       ],
-    };
+    });
   }
 }

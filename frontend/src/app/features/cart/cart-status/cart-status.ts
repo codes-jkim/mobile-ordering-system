@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,6 +15,7 @@ import { CartService } from '../cart.service';
   imports: [CurrencyPipe, MatButtonModule, MatIconModule, MatBadgeModule],
   templateUrl: './cart-status.html',
   styleUrl: './cart-status.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartStatus {
   public cartService = inject(CartService);

@@ -8,9 +8,9 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-card__value">
-          <span aria-label="Daily Orders Count">{{ dailyOrdersCount }}</span>
+          <span aria-label="Daily Orders Count">{{ dailyOrdersCount() }}</span>
           <span aria-hidden="true"> / </span>
-          <span aria-label="Daily Revenue">{{ dailyRevenue | number }}</span>
+          <span aria-label="Daily Revenue">{{ dailyRevenue() | number }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -22,9 +22,9 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-card__value">
-          <span aria-label="Weekly Orders Count">{{ weeklyOrdersCount }}</span>
+          <span aria-label="Weekly Orders Count">{{ weeklyOrdersCount() }}</span>
           <span aria-hidden="true"> / </span>
-          <span aria-label="Weekly Revenue">{{ weeklyRevenue | number }}</span>
+          <span aria-label="Weekly Revenue">{{ weeklyRevenue() | number }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -34,7 +34,7 @@
         <mat-card-title>Weekly Average Order Value</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div class="stat-card__value">{{ weeklyRevenue / 7 | number: '1.2-2' }}</div>
+        <div class="stat-card__value">{{ weeklyRevenue() / 7 | number: '1.2-2' }}</div>
       </mat-card-content>
     </mat-card>
   </div>
@@ -42,7 +42,7 @@
   <div class="dashboard__category">
     <h2 class="dashboard__section-title">Popular Products by Category</h2>
     <div class="dashboard__category-grid">
-      @for (categoryGroup of topProductsByCategory; track categoryGroup.category) {
+      @for (categoryGroup of topProductsByCategory(); track categoryGroup.category) {
         <mat-card class="category-rank-card">
           <mat-card-header>
             <mat-card-title>{{ categoryGroup.category }}</mat-card-title>
@@ -79,7 +79,7 @@
       <mat-card-content>
         <canvas
           baseChart
-          [data]="salesChartData"
+          [data]="salesChartData()"
           [type]="'line'"
           [options]="salesChartOptions"
           role="img"

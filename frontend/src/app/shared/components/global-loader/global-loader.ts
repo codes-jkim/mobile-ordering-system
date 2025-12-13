@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingService } from '../../../core/services/loading.service';
 
@@ -9,6 +9,7 @@ import { LoadingService } from '../../../core/services/loading.service';
   imports: [MatProgressSpinnerModule, CommonModule],
   templateUrl: './global-loader.html',
   styleUrls: ['./global-loader.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GlobalLoader {
   loadingService = inject(LoadingService);

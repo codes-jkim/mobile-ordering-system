@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   MAT_BOTTOM_SHEET_DATA,
   MatBottomSheetModule,
@@ -24,6 +24,7 @@ import { Product } from '../../../../shared/models/product.model';
   ],
   templateUrl: './quantity-selector.html',
   styleUrl: './quantity-selector.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuantitySelector {
   public data: { product: Product } = inject(MAT_BOTTOM_SHEET_DATA);

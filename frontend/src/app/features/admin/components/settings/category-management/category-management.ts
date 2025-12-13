@@ -1,6 +1,13 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -30,6 +37,7 @@ import { CategoryForm } from '../category-form/category-form';
   ],
   templateUrl: './category-management.html',
   styleUrls: ['./category-management.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryManagement implements OnInit {
   @ViewChild('table', { static: true }) table!: MatTable<Category[]>;

@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +25,7 @@ import { ProductForm } from '../product-form/product-form';
   ],
   templateUrl: './product-management.html',
   styleUrl: './product-management.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductManagement implements OnInit {
   private productService = inject(ProductService);

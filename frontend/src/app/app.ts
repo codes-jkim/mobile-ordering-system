@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GlobalLoader } from './shared/components/global-loader/global-loader';
 
@@ -8,6 +8,7 @@ import { GlobalLoader } from './shared/components/global-loader/global-loader';
   imports: [RouterOutlet, GlobalLoader],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   protected readonly title = signal('frontend');

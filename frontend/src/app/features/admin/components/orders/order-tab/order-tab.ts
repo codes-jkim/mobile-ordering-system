@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +19,7 @@ import { Order } from '../../../../../shared/models/order.model';
   ],
   templateUrl: './order-tab.html',
   styleUrl: './order-tab.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderTab {
   @Input() orders: Order[] = [];

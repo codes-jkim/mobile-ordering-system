@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -46,6 +46,7 @@ import { OrderTab } from '../order-tab/order-tab';
   ],
   templateUrl: './order-list.html',
   styleUrl: './order-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderList implements OnInit {
   private orderService = inject(OrderService);
