@@ -1,14 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
+  computed,
   ElementRef,
   inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { environment } from '../../../../../../environment';
 import { CategoryService } from '../../../../../shared/services/category.service';
 
+import { form, FormField, required } from '@angular/forms/signals';
+import type { Category } from '../../../../../shared/models/category.model';
+
 @Component({
   selector: 'app-product-form',
   standalone: true,
@@ -26,18 +29,17 @@ import { CategoryService } from '../../../../../shared/services/category.service
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
-    ReactiveFormsModule,
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
     MatSlideToggleModule,
+    FormField,
   ],
   templateUrl: './product-form.html',
   styleUrl: './product-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductForm implements OnInit {
-  private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
   public categories = toSignal(this.categoryService.getAllCategories(), { initialValue: [] });
   public dialogRef = inject(MatDialogRef<ProductForm>);
@@ -45,21 +47,58 @@ export class ProductForm implements OnInit {
 
   isEditMode = false;
   hasExistingImage = false;
-  isChanged = false;
 
-  private destroyRef = inject(DestroyRef);
+  private readonly imageChanged = signal(false);
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   selectedFile: File | null = null;
-  imagePreview: string | null = null;
+  imagePreview = signal<string | null>(null);
 
-  productForm = this.fb.group({
-    name: ['', Validators.required],
-    category: ['', Validators.required],
-    price: [0, [Validators.required, Validators.min(0)]],
-    inStock: [true],
-    description: [''],
+  productModel = signal<{
+    name: string;
+    category: Category | null;
+    price: string;
+    inStock: boolean;
+    description: string;
+  }>({
+    name: '',
+    category: null,
+    price: '',
+    inStock: true,
+    description: '',
+  });
+
+  initialModel = signal<{
+    name: string;
+    categoryId: string | null;
+    price: string;
+    inStock: boolean;
+    description: string;
+  } | null>(null);
+
+  productForm = form(this.productModel, (schemaPath) => {
+    required(schemaPath.name, { message: 'Product name is required.' });
+    required(schemaPath.category, { message: 'Product category must be selected.' });
+    required(schemaPath.price, { message: 'Product price is required' });
+  });
+
+  readonly isChanged = computed(() => {
+    if (!this.isEditMode) return false;
+
+    if (this.imageChanged()) return true;
+
+    const initial = this.initialModel();
+    if (!initial) return false;
+
+    const current = this.productModel();
+    return (
+      initial.name !== current.name ||
+      initial.categoryId !== (current.category?._id ?? null) ||
+      initial.price !== current.price ||
+      initial.inStock !== current.inStock ||
+      initial.description !== current.description
+    );
   });
 
   ngOnInit(): void {
@@ -67,36 +106,43 @@ export class ProductForm implements OnInit {
       this.isEditMode = true;
 
       this.hasExistingImage = !!this.data.product.imageUrl;
-      this.productForm.patchValue({
+      this.productModel.set({
         name: this.data.product.name,
         category: this.data.product.category,
-        price: this.data.product.price,
+        price: String(this.data.product.price),
         inStock: this.data.product.inStock,
         description: this.data.product.description || '',
       });
 
       if (this.data.product.imageUrl) {
-        this.imagePreview = `${environment.backendUrl}${this.data.product.imageUrl}`;
+        this.imagePreview.set(`${environment.backendUrl}${this.data.product.imageUrl}`);
       }
-
-      const subscription = this.productForm.valueChanges.subscribe((changedValues) => {
-        this.isChanged =
-          this.data.product.name !== changedValues.name ||
-          this.data.product.category !== changedValues.category ||
-          this.data.product.price !== changedValues.price ||
-          this.data.product.inStock !== changedValues.inStock ||
-          this.data.product.description !== changedValues.description;
-      });
-
-      this.destroyRef.onDestroy(() => {
-        subscription.unsubscribe();
+      this.initialModel.set({
+        name: this.data.product.name,
+        categoryId: this.data.product.category?._id ?? null,
+        price: String(this.data.product.price),
+        inStock: this.data.product.inStock,
+        description: this.data.product.description || '',
       });
     }
   }
-  onSave(): void {
-    if (this.productForm.valid) {
+
+  onSave(event: Event): void {
+    event.preventDefault();
+
+    if (this.productForm().valid()) {
+      const raw = this.productForm().value();
+      const trimmedPrice = raw.price.trim();
+
+      // should be redundant with required(), but keep it defensive
+      if (trimmedPrice === '') return;
+      if (!/^\d+$/.test(trimmedPrice)) return;
+
       this.dialogRef.close({
-        formValue: this.productForm.value,
+        formValue: {
+          ...raw,
+          price: Number(trimmedPrice),
+        },
         file: this.selectedFile,
       });
     }
@@ -110,17 +156,19 @@ export class ProductForm implements OnInit {
     const fileInput = event.target as HTMLInputElement;
 
     if (fileInput.files && fileInput.files.length > 0) {
+      if (this.isEditMode) {
+        this.imageChanged.set(true);
+      }
       this.selectedFile = fileInput.files[0];
 
       const reader = new FileReader();
       reader.onload = (): void => {
-        this.imagePreview = reader.result as string;
+        this.imagePreview.set(reader.result as string);
       };
       reader.readAsDataURL(this.selectedFile);
 
       if (this.hasExistingImage) {
         this.hasExistingImage = false;
-        this.isChanged = true;
       }
     }
   }
@@ -129,19 +177,17 @@ export class ProductForm implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
-  removeSelectedFile(): void {
-    this.selectedFile = null;
-    this.imagePreview = null;
-    this.fileInput.nativeElement.value = '';
-  }
-
   get isSaveDisabled(): boolean {
-    if (!this.productForm.valid) return true;
+    if (!this.productForm().valid()) return true;
 
     if (this.isEditMode) {
-      return !this.isChanged;
+      return !this.isChanged();
     } else {
       return !this.selectedFile;
     }
+  }
+
+  compareCategory(a: Category, b: Category): boolean {
+    return a._id === b._id;
   }
 }

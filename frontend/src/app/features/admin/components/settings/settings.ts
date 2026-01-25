@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +10,6 @@ import { ChangePassword } from './change-password/change-password';
   selector: 'app-settings',
   standalone: true,
   imports: [
-    CommonModule,
     MatIconModule,
     InitialFocusDirective,
     MatButtonModule,

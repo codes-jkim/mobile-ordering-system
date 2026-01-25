@@ -1,22 +1,24 @@
 <h2 mat-dialog-title>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h2>
 
-<form [formGroup]="productForm" (ngSubmit)="onSave()">
+<form (submit)="onSave($event)">
   <div mat-dialog-content class="pf__content">
     <mat-form-field class="pf__field">
       <mat-label>Name</mat-label>
       <input
         matInput
-        formControlName="name"
+        [formField]="productForm.name"
         placeholder="Product name"
-        required
         aria-describedby="name-error"
         [attr.aria-invalid]="
-          productForm.get('name')?.touched && productForm.get('name')?.hasError('required')
+          (productForm.name().dirty() || productForm.name().touched()) &&
+          productForm.name().invalid()
             ? 'true'
             : 'false'
         "
       />
-      @if (productForm.get('name')?.touched && productForm.get('name')?.hasError('required')) {
+      @if (
+        (productForm.name().dirty() || productForm.name().touched()) && productForm.name().invalid()
+      ) {
         <mat-error id="name-error"> Product name is required. </mat-error>
       }
     </mat-form-field>
@@ -24,11 +26,12 @@
     <mat-form-field class="pf__field">
       <mat-label>Category</mat-label>
       <mat-select
-        formControlName="category"
-        required
+        [formField]="productForm.category"
+        [compareWith]="compareCategory"
         aria-describedby="category-error"
         [attr.aria-invalid]="
-          productForm.get('category')?.touched && productForm.get('category')?.hasError('required')
+          (productForm.category().dirty() || productForm.category().touched()) &&
+          productForm.category().invalid()
             ? 'true'
             : 'false'
         "
@@ -38,9 +41,12 @@
         }
       </mat-select>
       @if (
-        productForm.get('category')?.touched && productForm.get('category')?.hasError('required')
+        (productForm.category().dirty() || productForm.category().touched()) &&
+        productForm.category().invalid()
       ) {
-        <mat-error id="category-error"> Product category is required. </mat-error>
+        <mat-error id="category-error">
+          {{ productForm.category().errors()[0].kind === 'required' }}
+        </mat-error>
       }
     </mat-form-field>
 
@@ -48,30 +54,38 @@
       <mat-label>Price</mat-label>
       <input
         matInput
-        formControlName="price"
-        type="number"
-        min="0"
-        placeholder="0"
-        required
+        [formField]="productForm.price"
+        type="text"
+        inputmode="numeric"
         aria-describedby="price-error"
         [attr.aria-invalid]="
-          productForm.get('price')?.touched && productForm.get('price')?.hasError('required')
+          (productForm.price().dirty() || productForm.price().touched()) &&
+          productForm.price().invalid()
             ? 'true'
             : 'false'
         "
       />
-      @if (productForm.get('price')?.touched && productForm.get('price')?.hasError('required')) {
-        <mat-error id="price-error"> Product price is required. </mat-error>
+      @if (
+        (productForm.price().dirty() || productForm.price().touched()) &&
+        productForm.price().invalid()
+      ) {
+        <mat-error id="price-error"> {{ productForm.price().errors()[0].message }} </mat-error>
       }
     </mat-form-field>
 
     <mat-form-field class="pf__field">
       <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" placeholder="Product description"></textarea>
+      <textarea
+        matInput
+        [formField]="productForm.description"
+        placeholder="Product description"
+      ></textarea>
     </mat-form-field>
 
     <div class="pf__field">
-      <mat-slide-toggle formControlName="inStock" aria-label=""> In Stock </mat-slide-toggle>
+      <mat-slide-toggle [formField]="productForm.inStock" aria-label="">
+        In Stock
+      </mat-slide-toggle>
       <mat-hint align="start" class="pf__toggle-hint">
         If turned off, customers won't be able to order this product.
       </mat-hint>
@@ -87,7 +101,7 @@
         (change)="onFileSelected($event)"
       />
 
-      @if (!imagePreview) {
+      @if (!imagePreview()) {
         <button
           type="button"
           class="pf__upload-btn"
@@ -100,18 +114,18 @@
       } @else {
         <div class="pf__preview-container">
           <img
-            [src]="imagePreview"
+            [src]="imagePreview()"
             [alt]="'Preview of selected product image: ' + (selectedFile?.name || '')"
             class="pf__preview-img"
           />
           <button
             matIconButton
             type="button"
-            class="pf__remove-btn"
-            (click)="removeSelectedFile()"
-            aria-label="Remove selected image"
+            class="pf__edit-btn"
+            (click)="triggerFileInput()"
+            aria-label="Edit an image"
           >
-            <mat-icon aria-hidden="true">delete</mat-icon>
+            <mat-icon aria-hidden="true">edit</mat-icon>
           </button>
         </div>
       }

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import type { Category } from '../../../../../shared/models/category.model';
 import { ProductForm } from './product-form';
 
 describe('ProductForm', () => {
@@ -38,24 +39,41 @@ describe('ProductForm', () => {
   });
 
   it('should disable the save button when the form is invalid', () => {
-    const saveButton = fixture.nativeElement.querySelector('button[type="submit"]');
+    const saveButton: HTMLButtonElement =
+      fixture.nativeElement.querySelector('button[type="submit"]');
     expect(saveButton.disabled).toBeTrue();
   });
 
-  it('should close the dialog with form data and file on save', () => {
-    const formValue = {
+  it('should close the dialog with form data and file on save (price is converted to number)', () => {
+    const category: Category = { _id: 'cid_1', name: 'Test Category' } as Category;
+
+    component.productModel.set({
       name: 'Test Product',
-      price: 1000,
-      category: 'cid_1',
+      price: '1000',
+      category,
       description: '',
       inStock: true,
-    };
-    component.productForm.setValue(formValue);
+    });
+
     component.selectedFile = mockFile;
     fixture.detectChanges();
 
-    component.onSave();
+    const event = new Event('submit');
+    spyOn(event, 'preventDefault');
 
-    expect(mockDialogRef.close).toHaveBeenCalledWith({ formValue, file: mockFile });
+    component.onSave(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith({
+      formValue: {
+        name: 'Test Product',
+        price: 1000,
+        category,
+        description: '',
+        inStock: true,
+      },
+      file: mockFile,
+    });
   });
 });

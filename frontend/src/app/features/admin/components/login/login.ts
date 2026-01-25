@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,14 +9,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink,
-    CommonModule,
-    MatCardModule,
-  ],
+  imports: [MatInputModule, MatButtonModule, MatIconModule, RouterLink, MatCardModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
   host: {
