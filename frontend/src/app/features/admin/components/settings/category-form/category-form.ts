@@ -8,7 +8,6 @@ import { Category } from '../../../../../shared/models/category.model';
 
 @Component({
   selector: 'app-category-form',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatDialogModule,

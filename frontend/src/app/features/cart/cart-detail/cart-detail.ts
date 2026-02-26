@@ -9,7 +9,6 @@ import { CartService } from '../cart.service';
 
 @Component({
   selector: 'app-cart-detail',
-  standalone: true,
   imports: [CurrencyPipe, MatIconModule, MatButtonModule, MatDividerModule, InitialFocusDirective],
   templateUrl: './cart-detail.html',
   styleUrl: './cart-detail.scss',

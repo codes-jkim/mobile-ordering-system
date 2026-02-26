@@ -13,7 +13,6 @@ import { Product } from '../../../../shared/models/product.model';
 
 @Component({
   selector: 'app-quantity-selector',
-  standalone: true,
   imports: [
     MatListModule,
     MatIconModule,

@@ -24,7 +24,6 @@ import type { Category } from '../../../../../shared/models/category.model';
 
 @Component({
   selector: 'app-product-form',
-  standalone: true,
   imports: [
     MatFormFieldModule,
     MatDialogModule,
@@ -187,7 +186,8 @@ export class ProductForm implements OnInit {
     }
   }
 
-  compareCategory(a: Category, b: Category): boolean {
+  compareCategory(a: Category | null, b: Category | null): boolean {
+    if (!a || !b) return false;
     return a._id === b._id;
   }
 }

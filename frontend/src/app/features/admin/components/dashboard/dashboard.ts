@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,9 +23,7 @@ Chart.register(...registerables, ChartDataLabels);
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
-    CommonModule,
     MatCardModule,
     MatIconModule,
     MatGridListModule,
@@ -33,6 +31,7 @@ Chart.register(...registerables, ChartDataLabels);
     BaseChartDirective,
     MatProgressSpinnerModule,
     InitialFocusDirective,
+    DecimalPipe,
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss'],
@@ -64,9 +63,6 @@ export class Dashboard implements OnInit {
         this.topProductsByCategory.set(stats.topProductsByCategory);
 
         this.initSalesChart(stats.salesByDate);
-      },
-      error: (err) => {
-        console.error('Failed to load dashboard data:', err);
       },
     });
     this.salesChartOptions = {

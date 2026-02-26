@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, Observable, of, take, tap } from 'rxjs';
 import { environment } from '../../../environment';
 import { Admin } from '../../shared/models/admin.model';
 
@@ -33,10 +33,13 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.get(`${this.apiUrl}/logout`).subscribe(() => {
-      this.isAuthenticated.set(false);
-      this.router.navigate(['/']);
-    });
+    this.http
+      .get(`${this.apiUrl}/logout`)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.isAuthenticated.set(false);
+        this.router.navigate(['/']);
+      });
   }
 
   public checkAuth(): Observable<Admin | null> {

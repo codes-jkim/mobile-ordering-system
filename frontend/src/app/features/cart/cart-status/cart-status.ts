@@ -11,7 +11,6 @@ import { CartService } from '../cart.service';
 
 @Component({
   selector: 'app-cart-status',
-  standalone: true,
   imports: [CurrencyPipe, MatButtonModule, MatIconModule, MatBadgeModule],
   templateUrl: './cart-status.html',
   styleUrl: './cart-status.scss',

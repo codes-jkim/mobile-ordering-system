@@ -44,9 +44,7 @@
         (productForm.category().dirty() || productForm.category().touched()) &&
         productForm.category().invalid()
       ) {
-        <mat-error id="category-error">
-          {{ productForm.category().errors()[0].kind === 'required' }}
-        </mat-error>
+        <mat-error id="category-error"> Category is required. </mat-error>
       }
     </mat-form-field>
 

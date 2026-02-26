@@ -22,7 +22,6 @@ import { CategoryForm } from '../category-form/category-form';
 
 @Component({
   selector: 'app-category-management',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -74,9 +73,6 @@ export class CategoryManagement implements OnInit {
             this.loadCategories();
           }
         },
-        error: (err) => {
-          console.error('Failed to save category', err);
-        },
       });
     });
   }
@@ -87,9 +83,6 @@ export class CategoryManagement implements OnInit {
           this.loadCategories();
         }
       },
-      error: (err) => {
-        console.error('Failed to update category status', err);
-      },
     });
   }
 
@@ -98,9 +91,6 @@ export class CategoryManagement implements OnInit {
       this.categoryService.deleteCategory(category._id).subscribe({
         next: () => {
           this.loadCategories();
-        },
-        error: (err) => {
-          console.error('Failed to delete category', err);
         },
       });
     }

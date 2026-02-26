@@ -15,7 +15,6 @@ import { QuantitySelector } from '../quantity-selector/quantity-selector';
 
 @Component({
   selector: 'app-product-list',
-  standalone: true,
   imports: [
     MatCardModule,
     MatButtonModule,

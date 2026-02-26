@@ -1,5 +1,13 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +21,6 @@ import { ProductForm } from '../product-form/product-form';
 
 @Component({
   selector: 'app-product-management',
-  standalone: true,
   imports: [
     MatIconModule,
     MatTableModule,
@@ -30,6 +37,7 @@ import { ProductForm } from '../product-form/product-form';
 export class ProductManagement implements OnInit {
   private productService = inject(ProductService);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   backendUrl = environment.backendUrl;
   products = signal<Product[]>([]);
@@ -40,9 +48,12 @@ export class ProductManagement implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getAllProducts().subscribe((data) => {
-      this.products.set(data);
-    });
+    this.productService
+      .getAllProducts()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data) => {
+        this.products.set(data);
+      });
   }
 
   openProductForm(product?: Product): void {
@@ -51,22 +62,25 @@ export class ProductManagement implements OnInit {
       data: { product: product ? product : null },
     });
 
-    dialogRef.afterClosed().subscribe((productData) => {
-      if (productData) {
-        if (product) {
-          this.productService
-            .updateProduct(product._id, productData.formValue, productData.file)
-            .subscribe(() => {
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((productData) => {
+        if (productData) {
+          if (product) {
+            this.productService
+              .updateProduct(product._id, productData.formValue, productData.file)
+              .subscribe(() => {
+                this.loadProducts();
+              });
+          } else {
+            const newProduct = { ...productData.formValue, inStock: true };
+            this.productService.createProduct(newProduct, productData.file).subscribe(() => {
               this.loadProducts();
             });
-        } else {
-          const newProduct = { ...productData.formValue, inStock: true };
-          this.productService.createProduct(newProduct, productData.file).subscribe(() => {
-            this.loadProducts();
-          });
+          }
         }
-      }
-    });
+      });
   }
 
   deleteProduct(id: string): void {

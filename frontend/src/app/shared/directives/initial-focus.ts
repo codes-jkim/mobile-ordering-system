@@ -2,7 +2,6 @@ import { AfterViewInit, Directive, ElementRef, inject } from '@angular/core';
 
 @Directive({
   selector: '[appInitialFocus]',
-  standalone: true,
 })
 export class InitialFocusDirective implements AfterViewInit {
   private el = inject(ElementRef);

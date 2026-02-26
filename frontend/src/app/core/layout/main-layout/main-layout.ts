@@ -10,7 +10,6 @@ import { CartService } from '../../../features/cart/cart.service';
 
 @Component({
   selector: 'app-main-layout',
-  standalone: true,
   imports: [
     MatProgressSpinnerModule,
     MatListModule,

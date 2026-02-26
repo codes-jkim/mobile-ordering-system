@@ -7,7 +7,6 @@ import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-receipt',
-  standalone: true,
   imports: [CurrencyPipe, DatePipe, MatDialogModule, MatButtonModule, MatListModule, MatIconModule],
   templateUrl: './receipt.html',
   styleUrls: ['./receipt.scss'],

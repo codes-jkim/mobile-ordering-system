@@ -8,7 +8,6 @@ import { ChangePassword } from './change-password/change-password';
 
 @Component({
   selector: 'app-settings',
-  standalone: true,
   imports: [
     MatIconModule,
     InitialFocusDirective,

@@ -4,7 +4,6 @@ import { GlobalLoader } from './shared/components/global-loader/global-loader';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, GlobalLoader],
   templateUrl: './app.html',
   styleUrl: './app.scss',

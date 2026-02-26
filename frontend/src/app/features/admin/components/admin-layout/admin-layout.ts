@@ -6,7 +6,6 @@ import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-layout',
-  standalone: true,
   imports: [RouterOutlet, MatIconModule, RouterLink, RouterLinkActive, MatButtonModule],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.scss',

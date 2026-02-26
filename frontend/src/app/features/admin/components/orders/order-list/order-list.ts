@@ -27,7 +27,6 @@ import { OrderTab } from '../order-tab/order-tab';
 
 @Component({
   selector: 'app-order-list',
-  standalone: true,
   imports: [
     AsyncPipe,
     OrderTab,
@@ -39,7 +38,6 @@ import { OrderTab } from '../order-tab/order-tab';
     MatChipsModule,
     ReactiveFormsModule,
     MatInputModule,
-    FormsModule,
     MatNativeDateModule,
     InitialFocusDirective,
     MatDatepickerModule,

@@ -5,7 +5,6 @@ import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-not-found',
-  standalone: true,
   imports: [MatButtonModule, RouterModule],
   templateUrl: './not-found.html',
   styleUrl: './not-found.scss',

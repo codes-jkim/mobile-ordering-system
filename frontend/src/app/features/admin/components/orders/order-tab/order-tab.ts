@@ -7,7 +7,6 @@ import { Order } from '../../../../../shared/models/order.model';
 
 @Component({
   selector: 'app-order-tab',
-  standalone: true,
   imports: [
     DatePipe,
     CommonModule,
