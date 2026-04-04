@@ -21,7 +21,7 @@
     <ng-container matColumnDef="displayOrder" sticky>
       <mat-header-cell *matHeaderCellDef> Display Order </mat-header-cell>
       <mat-cell *matCellDef="let category">
-        <mat-icon class="drag-cursor">reorder</mat-icon>
+        <mat-icon class="drag-cursor" aria-hidden="true">reorder</mat-icon>
         <span class="cm-table__display-order">{{ category.displayOrder + 1 }}</span>
       </mat-cell>
     </ng-container>

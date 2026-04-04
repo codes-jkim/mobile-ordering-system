@@ -27,7 +27,9 @@ describe('CategoryManagement', () => {
       'deleteCategory',
     ]);
     mockCategoryService.getAllCategories.and.returnValue(of(mockCategories));
-    mockDialog = { open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }) };
+    mockDialog = {
+      open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }),
+    };
 
     await TestBed.configureTestingModule({
       imports: [CategoryManagement],

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,6 +25,7 @@ export class ChangePassword {
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
   hideCurrentPassword = signal(true);
   hideNewPassword = signal(true);
   hideConfirmPassword = signal(true);
@@ -85,20 +87,23 @@ export class ChangePassword {
     if (!currentPassword || !newPassword) {
       return;
     }
-    this.authService.changePassword(currentPassword, newPassword).subscribe({
-      next: (response) => {
-        this.snackBar.open(response.message, 'Close', { duration: 3000 });
-        this.passwordForm.reset();
-      },
-      error: (error) => {
-        this.snackBar.open(
-          `Failed to change password: ${error.error?.message || error.message}`,
-          'Close',
-          {
-            duration: 5000,
-          },
-        );
-      },
-    });
+    this.authService
+      .changePassword(currentPassword, newPassword)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open(response.message, 'Close', { duration: 3000 });
+          this.passwordForm.reset();
+        },
+        error: (error) => {
+          this.snackBar.open(
+            `Failed to change password: ${error.error?.message || error.message}`,
+            'Close',
+            {
+              duration: 5000,
+            },
+          );
+        },
+      });
   }
 }

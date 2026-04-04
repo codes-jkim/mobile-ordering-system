@@ -12,7 +12,7 @@
         <mat-card-subtitle>
           {{ order.createdAt | date: 'yyyy/MM/dd HH:mm' }}
         </mat-card-subtitle>
-        <div class="order-status" [ngClass]="getStatusClass(order.status)">
+        <div class="order-status" [class]="getStatusClass(order.status)">
           {{ order.status | uppercase }}
         </div>
       </mat-card-header>

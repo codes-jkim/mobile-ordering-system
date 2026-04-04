@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { environment } from '../../../../../environment';
+import { InitialFocusDirective } from '../../../../shared/directives/initial-focus';
 import { Product } from '../../../../shared/models/product.model';
 import { CategoryService } from '../../../../shared/services/category.service';
 import { CartService } from '../../../cart/cart.service';
@@ -22,6 +23,7 @@ import { QuantitySelector } from '../quantity-selector/quantity-selector';
     CurrencyPipe,
     MatTabsModule,
     MatBottomSheetModule,
+    InitialFocusDirective,
   ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',

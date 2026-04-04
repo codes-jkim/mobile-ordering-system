@@ -2,11 +2,13 @@ import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   inject,
   OnInit,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -48,23 +50,27 @@ export class Dashboard implements OnInit {
   salesChartData = signal<ChartData<'bar' | 'line'>>({ datasets: [], labels: [] });
 
   private orderService = inject(OrderService);
+  private destroyRef = inject(DestroyRef);
   salesChartOptions: ChartOptions = {};
   ngOnInit(): void {
     this.loadDashboardData();
   }
 
   loadDashboardData(): void {
-    this.orderService.getDashboardStats().subscribe({
-      next: (stats) => {
-        this.dailyOrdersCount.set(stats.dailyOrders);
-        this.weeklyOrdersCount.set(stats.weeklyOrders);
-        this.dailyRevenue.set(stats.dailyRevenue);
-        this.weeklyRevenue.set(stats.weeklyRevenue);
-        this.topProductsByCategory.set(stats.topProductsByCategory);
+    this.orderService
+      .getDashboardStats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (stats) => {
+          this.dailyOrdersCount.set(stats.dailyOrders);
+          this.weeklyOrdersCount.set(stats.weeklyOrders);
+          this.dailyRevenue.set(stats.dailyRevenue);
+          this.weeklyRevenue.set(stats.weeklyRevenue);
+          this.topProductsByCategory.set(stats.topProductsByCategory);
 
-        this.initSalesChart(stats.salesByDate);
-      },
-    });
+          this.initSalesChart(stats.salesByDate);
+        },
+      });
     this.salesChartOptions = {
       responsive: true,
       interaction: {

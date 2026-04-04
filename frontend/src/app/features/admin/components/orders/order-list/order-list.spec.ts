@@ -80,7 +80,9 @@ describe('OrderList', () => {
     mockOrderService = jasmine.createSpyObj('OrderService', ['getAllOrders', 'updateOrderStatus']);
     mockOrderService.getAllOrders.and.returnValue(of(mockOrders));
     mockNotificationService = jasmine.createSpyObj('NotificationService', ['displayNotification']);
-    mockDialog = { open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }) };
+    mockDialog = {
+      open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }),
+    };
 
     await TestBed.configureTestingModule({
       imports: [OrderList],

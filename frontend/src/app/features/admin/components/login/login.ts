@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +40,7 @@ export class Login {
   }
   private router = inject(Router);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
   password = signal('');
   overMaxLength = signal(false);
@@ -59,12 +68,15 @@ export class Login {
   }
 
   submitPassword(): void {
-    this.authService.verifyPassword(this.password()).subscribe((result) => {
-      if (result) {
-        this.router.navigate(['/admin']);
-      } else {
-        this.clearPassword();
-      }
-    });
+    this.authService
+      .verifyPassword(this.password())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        if (result) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.clearPassword();
+        }
+      });
   }
 }

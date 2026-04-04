@@ -1,15 +1,15 @@
-import { AfterViewInit, Directive, ElementRef, inject } from '@angular/core';
+import { afterNextRender, Directive, ElementRef, inject } from '@angular/core';
 
 @Directive({
   selector: '[appInitialFocus]',
 })
-export class InitialFocusDirective implements AfterViewInit {
+export class InitialFocusDirective {
   private el = inject(ElementRef);
 
-  ngAfterViewInit(): void {
-    this.el.nativeElement.setAttribute('tabindex', '-1');
-    setTimeout(() => {
+  constructor() {
+    afterNextRender(() => {
+      this.el.nativeElement.setAttribute('tabindex', '-1');
       this.el.nativeElement.focus();
-    }, 0);
+    });
   }
 }

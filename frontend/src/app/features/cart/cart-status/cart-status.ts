@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,10 +21,12 @@ export class CartStatus {
   public cartService = inject(CartService);
   public orderService = inject(OrderService);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   createOrder(): void {
     this.orderService
       .createOrder(this.cartService.items(), this.cartService.totalPrice())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           this.openReceiptDialog(response);
@@ -33,6 +36,7 @@ export class CartStatus {
         },
       });
   }
+
   private openReceiptDialog(order: Order): void {
     const dialogRef = this.dialog.open(Receipt, {
       data: { order: order },
@@ -40,8 +44,11 @@ export class CartStatus {
       maxWidth: '50vh',
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-      this.cartService.clearCart();
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.cartService.clearCart();
+      });
   }
 }

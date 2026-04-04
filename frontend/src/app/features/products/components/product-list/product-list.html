@@ -1,5 +1,5 @@
 <div class="product-list">
-  <h1>Product List</h1>
+  <h1 appInitialFocus>Product List</h1>
   <mat-tab-group (selectedTabChange)="onTabChange($event)">
     @for (category of categories(); track category) {
       <mat-tab [label]="category"></mat-tab>
@@ -8,7 +8,7 @@
   @if (filteredProducts().length > 0) {
     <div class="product-list__grid">
       @for (product of filteredProducts(); track product._id) {
-        <mat-card role="group">
+        <mat-card role="group" [attr.aria-label]="product.name">
           <mat-card-header>
             <mat-card-title>{{ product.name }}</mat-card-title>
           </mat-card-header>
