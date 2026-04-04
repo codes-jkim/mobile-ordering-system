@@ -1,11 +1,20 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -19,6 +28,7 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
+import { ConfirmDialog } from '../../../../../shared/components/confirm-dialog/confirm-dialog';
 import { InitialFocusDirective } from '../../../../../shared/directives/initial-focus';
 import { Order } from '../../../../../shared/models/order.model';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -49,6 +59,8 @@ import { OrderTab } from '../order-tab/order-tab';
 export class OrderList implements OnInit {
   private orderService = inject(OrderService);
   private notificationService = inject(NotificationService);
+  private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
   private refreshTrigger = new BehaviorSubject<void>(undefined);
 
   activeTabIndex = signal(0);
@@ -133,22 +145,35 @@ export class OrderList implements OnInit {
   }
 
   cancelOrder(order: Order): void {
-    if (confirm('Do you really want to cancel this order?')) {
-      this.orderService.updateOrderStatus(order._id, 'cancelled').subscribe({
-        next: () => {
-          this.notificationService.displayNotification('Order has been cancelled', () => {
-            const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
-            matTabs[this.activeTabIndex()]?.focus();
-          });
-          this.refreshOrders();
+    this.dialog
+      .open(ConfirmDialog, {
+        autoFocus: 'first-heading',
+        data: {
+          title: 'Cancel order',
+          message: 'Do you really want to cancel this order?',
+          confirmLabel: 'Cancel order',
         },
-        error: () => {
-          this.notificationService.displayNotification('Error cancelling order', () => {
-            const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
-            matTabs[this.activeTabIndex()]?.focus();
+      })
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.orderService.updateOrderStatus(order._id, 'cancelled').subscribe({
+            next: () => {
+              this.notificationService.displayNotification('Order has been cancelled', () => {
+                const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+                matTabs[this.activeTabIndex()]?.focus();
+              });
+              this.refreshOrders();
+            },
+            error: () => {
+              this.notificationService.displayNotification('Error cancelling order', () => {
+                const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+                matTabs[this.activeTabIndex()]?.focus();
+              });
+            },
           });
-        },
+        }
       });
-    }
   }
 }

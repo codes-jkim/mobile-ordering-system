@@ -10,6 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialog } from '../../../../../shared/components/confirm-dialog/confirm-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,7 +26,6 @@ import { ProductForm } from '../product-form/product-form';
     MatIconModule,
     MatTableModule,
     MatButtonModule,
-    MatIconModule,
     MatToolbarModule,
     CurrencyPipe,
     InitialFocusDirective,
@@ -84,10 +84,23 @@ export class ProductManagement implements OnInit {
   }
 
   deleteProduct(id: string): void {
-    if (confirm('Do you really want to delete this product?')) {
-      this.productService.deleteProduct(id).subscribe(() => {
-        this.loadProducts();
+    this.dialog
+      .open(ConfirmDialog, {
+        autoFocus: 'first-heading',
+        data: {
+          title: 'Delete product',
+          message: 'Do you really want to delete this product? This action cannot be undone.',
+          confirmLabel: 'Delete',
+        },
+      })
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.productService.deleteProduct(id).subscribe(() => {
+            this.loadProducts();
+          });
+        }
       });
-    }
   }
 }

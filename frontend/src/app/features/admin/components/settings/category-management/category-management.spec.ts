@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { CategoryService } from '../../../../../shared/services/category.service';
 import { CategoryManagement } from './category-management';
@@ -16,6 +17,7 @@ describe('CategoryManagement', () => {
   let component: CategoryManagement;
   let fixture: ComponentFixture<CategoryManagement>;
   let mockCategoryService: jasmine.SpyObj<CategoryService>;
+  let mockDialog: { open: jasmine.Spy };
 
   beforeEach(async () => {
     mockCategoryService = jasmine.createSpyObj('CategoryService', [
@@ -25,16 +27,15 @@ describe('CategoryManagement', () => {
       'deleteCategory',
     ]);
     mockCategoryService.getAllCategories.and.returnValue(of(mockCategories));
+    mockDialog = { open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }) };
 
     await TestBed.configureTestingModule({
       imports: [CategoryManagement],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        {
-          provide: CategoryService,
-          useValue: mockCategoryService,
-        },
+        { provide: CategoryService, useValue: mockCategoryService },
+        { provide: MatDialog, useValue: mockDialog },
       ],
     }).compileComponents();
 
@@ -97,22 +98,23 @@ describe('CategoryManagement', () => {
     const categoryToDelete = mockCategories[0];
     const expectedCategoriesAfterDelete = [mockCategories[1]];
     mockCategoryService.getAllCategories.and.returnValue(of(expectedCategoriesAfterDelete));
-
     mockCategoryService.deleteCategory.and.returnValue(of(undefined));
-    spyOn(window, 'confirm').and.returnValue(true);
+    mockDialog.open.and.returnValue({ afterClosed: () => of(true) });
 
     component.deleteCategory(categoryToDelete);
 
+    expect(mockDialog.open).toHaveBeenCalled();
     expect(mockCategoryService.deleteCategory).toHaveBeenCalledWith(categoryToDelete._id);
     expect(component.categories()).toEqual(expectedCategoriesAfterDelete);
   });
 
   it('should NOT call deleteCategory if confirmation is cancelled', () => {
     const categoryToDelete = mockCategories[0];
-    spyOn(window, 'confirm').and.returnValue(false);
+    mockDialog.open.and.returnValue({ afterClosed: () => of(false) });
 
     component.deleteCategory(categoryToDelete);
 
+    expect(mockDialog.open).toHaveBeenCalled();
     expect(mockCategoryService.deleteCategory).not.toHaveBeenCalled();
   });
 });

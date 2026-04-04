@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { Order } from '../../../../../shared/models/order.model';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -73,11 +74,13 @@ describe('OrderList', () => {
   let fixture: ComponentFixture<OrderList>;
   let mockOrderService: jasmine.SpyObj<OrderService>;
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
+  let mockDialog: { open: jasmine.Spy };
 
   beforeEach(async () => {
     mockOrderService = jasmine.createSpyObj('OrderService', ['getAllOrders', 'updateOrderStatus']);
     mockOrderService.getAllOrders.and.returnValue(of(mockOrders));
     mockNotificationService = jasmine.createSpyObj('NotificationService', ['displayNotification']);
+    mockDialog = { open: jasmine.createSpy('open').and.returnValue({ afterClosed: () => of(true) }) };
 
     await TestBed.configureTestingModule({
       imports: [OrderList],
@@ -86,6 +89,7 @@ describe('OrderList', () => {
         provideHttpClientTesting(),
         { provide: OrderService, useValue: mockOrderService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: MatDialog, useValue: mockDialog },
       ],
     }).compileComponents();
 
@@ -161,20 +165,20 @@ describe('OrderList', () => {
     });
 
     it('should NOT call updateOrderStatus if user cancels confirmation', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
+      mockDialog.open.and.returnValue({ afterClosed: () => of(false) });
 
       component.cancelOrder(testOrder);
 
-      expect(window.confirm).toHaveBeenCalledWith('Do you really want to cancel this order?');
+      expect(mockDialog.open).toHaveBeenCalled();
       expect(mockOrderService.updateOrderStatus).not.toHaveBeenCalled();
     });
 
     it('should call updateOrderStatus if user confirms cancellation', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      mockDialog.open.and.returnValue({ afterClosed: () => of(true) });
 
       component.cancelOrder(testOrder);
 
-      expect(window.confirm).toHaveBeenCalledWith('Do you really want to cancel this order?');
+      expect(mockDialog.open).toHaveBeenCalled();
       expect(mockOrderService.updateOrderStatus).toHaveBeenCalledWith(testOrder._id, 'cancelled');
     });
 
