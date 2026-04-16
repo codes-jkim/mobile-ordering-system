@@ -22,7 +22,7 @@ import { Category } from '../../../../../shared/models/category.model';
 export class CategoryForm implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<CategoryForm>);
-  public data: { category?: Category; categoryLength: number } = inject(MAT_DIALOG_DATA);
+  public data: { category?: Category } = inject(MAT_DIALOG_DATA);
   isEditMode = !!this.data.category;
 
   form = this.fb.group({

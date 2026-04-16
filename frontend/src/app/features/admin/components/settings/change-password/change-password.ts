@@ -32,12 +32,17 @@ export class ChangePassword {
 
   passwordForm = this.fb.group(
     {
-      currentPassword: ['', [Validators.required, Validators.maxLength(4)]],
+      currentPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
       newPassword: [
         '',
-        [Validators.required, Validators.maxLength(4), Validators.pattern(/^[0-9]*$/)],
+        [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(4),
+          Validators.pattern(/^[0-9]*$/),
+        ],
       ],
-      confirmPassword: ['', [Validators.required, Validators.maxLength(4)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
     },
     {
       validators: (group) => {

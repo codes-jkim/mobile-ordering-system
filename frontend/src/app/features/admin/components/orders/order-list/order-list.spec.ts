@@ -105,7 +105,6 @@ describe('OrderList', () => {
   });
 
   it('should load orders on init', () => {
-    component.ngOnInit();
     expect(mockOrderService.getAllOrders).toHaveBeenCalled();
   });
 

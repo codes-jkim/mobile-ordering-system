@@ -85,7 +85,7 @@ export class CartService {
           _id: parsed._id,
           items: parsed.items,
           totalPrice: parsed.totalPrice,
-          createdAt: Number(parsed.createdAt).toString(),
+          createdAt: parsed.createdAt,
         };
       } catch (error) {
         console.error('Failed to parse cart data', error);

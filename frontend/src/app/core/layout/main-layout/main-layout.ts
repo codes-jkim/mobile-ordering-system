@@ -27,12 +27,7 @@ import { CartService } from '../../../features/cart/cart.service';
 export class MainLayout {
   public cartService = inject(CartService);
 
-  cartDetailOpen = false;
   isCartDetailOpen = signal(false);
-
-  showCartDetails(event: boolean): void {
-    this.cartDetailOpen = event;
-  }
 
   openCartDetail(): void {
     this.isCartDetailOpen.set(true);

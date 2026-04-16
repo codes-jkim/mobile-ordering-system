@@ -16,7 +16,6 @@ import { CartService } from '../cart.service';
 })
 export class CartDetail {
   cartService = inject(CartService);
-  cartId = this.cartService.cartId();
   isOpen = signal(false);
 
   updateItemQuantity(product: Product, quantity: number): void {
