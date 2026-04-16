@@ -8,7 +8,7 @@ export class NotificationService {
   private snackBar = inject(MatSnackBar);
 
   displayNotification(message: string, onDismiss?: () => void): void {
-    const activeElement = document.activeElement as HTMLElement;
+    const activeElement = document.activeElement as HTMLElement | null;
     const snackBarRef = this.snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: 'center',
@@ -17,8 +17,8 @@ export class NotificationService {
     snackBarRef.afterDismissed().subscribe(() => {
       if (onDismiss) {
         onDismiss();
-      } else if (activeElement) {
-        activeElement.focus();
+      } else {
+        activeElement?.focus();
       }
     });
   }

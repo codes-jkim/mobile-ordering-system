@@ -19,7 +19,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { environment } from '../../../../../../environment';
 import { CategoryService } from '../../../../../shared/services/category.service';
 
-import { form, FormField, required } from '@angular/forms/signals';
+import { form, FormField, required, validate } from '@angular/forms/signals';
 import type { Category } from '../../../../../shared/models/category.model';
 
 @Component({
@@ -79,7 +79,16 @@ export class ProductForm implements OnInit {
   productForm = form(this.productModel, (schemaPath) => {
     required(schemaPath.name, { message: 'Product name is required.' });
     required(schemaPath.category, { message: 'Product category must be selected.' });
-    required(schemaPath.price, { message: 'Product price is required' });
+    required(schemaPath.price, { message: 'Product price is required.' });
+    validate(schemaPath.price, (ctx) => {
+      const value = ctx.value();
+      if (!value) return null;
+      if (!/^\d+$/.test(value.trim()))
+        return [{ kind: 'invalidPrice', message: 'Price must contain only digits.' }];
+      if (Number(value.trim()) <= 0)
+        return [{ kind: 'invalidPrice', message: 'Price must be greater than 0.' }];
+      return null;
+    });
   });
 
   readonly isChanged = computed(() => {

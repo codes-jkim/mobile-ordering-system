@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  OnInit,
   inject,
   signal,
 } from '@angular/core';
@@ -56,7 +55,7 @@ import { OrderTab } from '../order-tab/order-tab';
   styleUrl: './order-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrderList implements OnInit {
+export class OrderList {
   private orderService = inject(OrderService);
   private notificationService = inject(NotificationService);
   private dialog = inject(MatDialog);
@@ -93,10 +92,6 @@ export class OrderList implements OnInit {
     map((orders) => orders.filter((order) => order.status === 'cancelled')),
   );
 
-  ngOnInit(): void {
-    this.refreshOrders();
-  }
-
   refreshOrders(): void {
     this.refreshTrigger.next();
   }
@@ -127,21 +122,24 @@ export class OrderList implements OnInit {
   }
 
   completeOrder(order: Order): void {
-    this.orderService.updateOrderStatus(order._id, 'completed').subscribe({
-      next: () => {
-        this.notificationService.displayNotification('Order completed successfully', () => {
-          const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
-          matTabs[this.activeTabIndex()]?.focus();
-        });
-        this.refreshOrders();
-      },
-      error: () => {
-        this.notificationService.displayNotification('Error completing order', () => {
-          const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
-          matTabs[this.activeTabIndex()]?.focus();
-        });
-      },
-    });
+    this.orderService
+      .updateOrderStatus(order._id, 'completed')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.notificationService.displayNotification('Order completed successfully', () => {
+            const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+            matTabs[this.activeTabIndex()]?.focus();
+          });
+          this.refreshOrders();
+        },
+        error: () => {
+          this.notificationService.displayNotification('Error completing order', () => {
+            const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+            matTabs[this.activeTabIndex()]?.focus();
+          });
+        },
+      });
   }
 
   cancelOrder(order: Order): void {
@@ -155,25 +153,28 @@ export class OrderList implements OnInit {
         },
       })
       .afterClosed()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.orderService.updateOrderStatus(order._id, 'cancelled').subscribe({
-            next: () => {
-              this.notificationService.displayNotification('Order has been cancelled', () => {
-                const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
-                matTabs[this.activeTabIndex()]?.focus();
-              });
-              this.refreshOrders();
-            },
-            error: () => {
-              this.notificationService.displayNotification('Error cancelling order', () => {
-                const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
-                matTabs[this.activeTabIndex()]?.focus();
-              });
-            },
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((confirmed) => {
+          if (!confirmed) return of(null);
+          return this.orderService.updateOrderStatus(order._id, 'cancelled');
+        }),
+      )
+      .subscribe({
+        next: (result) => {
+          if (result === null) return;
+          this.notificationService.displayNotification('Order has been cancelled', () => {
+            const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+            matTabs[this.activeTabIndex()]?.focus();
           });
-        }
+          this.refreshOrders();
+        },
+        error: () => {
+          this.notificationService.displayNotification('Error cancelling order', () => {
+            const matTabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+            matTabs[this.activeTabIndex()]?.focus();
+          });
+        },
       });
   }
 }
